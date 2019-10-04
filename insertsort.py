@@ -1,6 +1,5 @@
 import string
 
-
 # Source: https://www.geeksforgeeks.org/insertion-sort/
 def insertionSort(arr):
     del arr[0]  #delete the first element
@@ -14,6 +13,10 @@ def insertionSort(arr):
 
 # Create Blank Array
 testArray = []
+
+# Write over file with empty string
+with open('insert.txt', 'w') as filehandle:
+    filehandle.write('') 
 
 # Read in Data from Data.txt
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
