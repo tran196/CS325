@@ -12,13 +12,11 @@ def insertionSort(arr):
                 j -= 1
         arr[j+1] = key
 
-# This function reads in a file and prints the contents of a file as an array
-# Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
-
 # Create Blank Array
 testArray = []
 
 # Read in Data from Data.txt
+# Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
 with open('data.txt') as f:
     for line in f:
         line = line.split()     #Gets rid of blank space
@@ -27,16 +25,14 @@ with open('data.txt') as f:
         for i in range(0, len(testArray)):
             testArray[i] = int(testArray[i])    #Convert str into int 
         
-        #Before Insertion Sort
-        print("Before Insertion Sort:")
-        print(testArray)        #Test Print 
+        insertionSort(testArray)            #Use insertionSort to rearrange array
 
-        #After Insertion Sort
-        print("After Insertion Sort:")
-        insertionSort(testArray)
-        print(testArray)        #Test Print
+        # Write array to file
+        with open('insert.txt', 'a') as filehandle:
+            for k in range(0, len(testArray)):
+                filehandle.write(str(testArray[k]))
+                filehandle.write(' ')   #Put a space between each number
+            filehandle.write('\n')      #After array has been written to txt file then add a newline character
 
-
-        
 
 
