@@ -1,13 +1,18 @@
+# Tuan Tran
+# 10/4/19
+# CS 325 Homework 1 
+
 import string
 
 # Source: https://www.geeksforgeeks.org/insertion-sort/
+# Source: https://www.khanacademy.org/computing/computer-science/algorithms/insertion-sort/a/insertion-sort
 def insertionSort(arr):
     del arr[0]  #delete the first element
-    for i in range(1, len(arr)): #Range starting at 1 
+    for i in range(1, len(arr)):    #Range starting at 1 aka 2nd element
         key = arr[i] 
-        j = i-1
-        while j >=0 and key < arr[j] : 
-                arr[j+1] = arr[j] 
+        j = i-1                     #Index of item left of i    
+        while j >=0 and key < arr[j]: 
+                arr[j+1] = arr[j]   #shift number in slot j to slot j+1
                 j -= 1
         arr[j+1] = key
 

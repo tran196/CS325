@@ -1,19 +1,27 @@
+# Tuan Tran
+# 10/4/19
+# CS 325 Homework 1 
+
 import string
 
 # Source: https://www.geeksforgeeks.org/merge-sort/
+# Source: https://www.w3resource.com/python-exercises/data-structures-and-algorithms/python-search-and-sorting-exercise-8.php
 def mergeSort(arr): 
-    # del arr[0]  #delete the first element
-    if len(arr) >1: 
-        mid = len(arr)//2 #Finding the mid of the array 
-        L = arr[:mid] # Dividing the array elements  
-        R = arr[mid:] # into 2 halves 
+
+    if len(arr) > 1: 
+        mid = len(arr)//2 #Finding the mid of the array/list 
+        L = arr[:mid] # Dividing the array/list elements from first element to mid 
+        R = arr[mid:] # into 2 halves from mid to last element
   
+        # Use Recursion to Sort the Left and Right lists
         mergeSort(L) # Sorting the first half 
         mergeSort(R) # Sorting the second half 
   
-        i = j = k = 0
+        i = 0
+        j = 0
+        k = 0
           
-        # Copy data to temp arrays L[] and R[] 
+        # Copy data to temp arrays/list L[] and R[] 
         while i < len(L) and j < len(R): 
             if L[i] < R[j]: 
                 arr[k] = L[i] 
@@ -36,6 +44,7 @@ def mergeSort(arr):
 
 # Create Blank Array
 testArray = []
+
 
 # Write over file with empty string
 with open('merge.txt', 'w') as filehandle:
