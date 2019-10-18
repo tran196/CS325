@@ -7,8 +7,11 @@
 numTestCases = 0
 currentTextCaseIndex = 0
 numItems = 0
+familySize = 0
 isNumItemLine = False
 isPriceWeightLine = False
+isFamilySizeLine = False
+isFamilyWeightLine = False
 isNextTestCase = False
 
 
@@ -24,19 +27,66 @@ isNextTestCase = False
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
 with open('shopping.txt') as f:
     currentLine = 0                         # use currentLine to keep track of what line I'm on in file
+    count = 0
     for line in f:
         if currentLine == 0:
             numTestCases = int(line)        # first line in shoppping.txt used for number of test cases
             isNumItemLine = True            # next line is the number of items in test case
             
-        elif isNumItemLine == True:
-            numItems = int(line)            # set the number of Items variable
-            priceList = []  #initalize price/weight list    
-            isNumItemLine = False           #setting isNumItemLine = false; No longer on numItem Line of Testcase
+        elif isFamilyWeightLine == True:
+            print("Family Weight Line")    #Test print
+            if count < familySize:
+                line = line.split()
+                familyList.append(line)
+                count += 1
+                if count == familySize:
+                    isFamilyWeightLine = False
+                #   isNextTestCase = True
+                    isNumItemLine = True
+                    count = 0
 
-        elif isPriceWeightLine == False:   
-            line = line.split() 
-            priceList.append(line)      # Assign Item Price & Weight 
+                print("Family List = ", familyList) # Test Print
+                
+
+        elif isFamilySizeLine == True:
+            print("Family Size Line")       #Test print
+            isFamilyWeightLine = True
+            isFamilySizeLine = False
+            familySize = int(line)          # Assign Family Size Value
+            print("Family Size = ", familySize)
+
+
+        elif isPriceWeightLine == True:   
+            print("Price/Weight Line")  #Test print
+            if count < numItems:
+                line = line.split() 
+                priceList.append(line)          # Assign Item Price & Weight 
+                count += 1
+                if count == numItems:
+                    isPriceWeightLine = False
+                    isFamilySizeLine = True
+                    count = 0
+            
+                print("Price List = ", priceList)   # Test Print
+
+
+
+        elif isNumItemLine == True:
+            print("Num Item Line")      #Test print
+
+            numItems = int(line)            # set the number of Items variable
+            priceList = []                  # initalize price/weight list  
+            familyList = []                 # initalize family list  
+            isNumItemLine = False           # setting isNumItemLine = false; No longer on numItem Line of Testcase
+            isPriceWeightLine = True 
+
+        else:
+            print("I'm lost")
+        
+        # elif isNextTestCase == True:
+        #     isNextTestCase = False
+        #     print("At next Test case")
+        #     isNumItemLine = True
             
         # *********Testing *********
             # for i in range(0, numItems):    # Assign Item Price & Weight 
@@ -47,9 +97,9 @@ with open('shopping.txt') as f:
 
         # *********Testing *********
 
-            isNextTestCase = True
+            
 
-
+        print("Current Line Number = ", currentLine)     #test print
         currentLine += 1                    # Increment current line
 
 
@@ -57,12 +107,13 @@ with open('shopping.txt') as f:
         # line = line.split()     #Gets rid of blank space
         # testArray = line        #Assign testArray to line
     
-    print("numTestCases = ", numTestCases)         #test print
-    print("numItems = ", numItems)                  #test print
-    print("isNumItemLine = ", isNumItemLine)         #test print
-    print("Current Line Number = ", currentLine)     #test print
+    # print("numTestCases = ", numTestCases)         #test print
+    # print("numItems = ", numItems)                  #test print
+    # print("isNumItemLine = ", isNumItemLine)         #test print
+    # print("Current Line Number = ", currentLine)     #test print
 
-    print("Price List = ", priceList)
+    # print("Price List = ", priceList)
+    # print("Family List = ", familyList)
 
 #         for i in range(0, len(testArray)):
 #             testArray[i] = int(testArray[i])    #Convert str into int 
