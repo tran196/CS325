@@ -44,9 +44,10 @@ def createMatrix(priceWeightList, familyWeightList):
             else:
                 matrix[i][j] = matrix[i-1][j]
 
-    # Check to see which items are included for each family member 
+    # Check to see which items are included/carried for each family member 
     
     for individualWeight in familyWeightList:
+        print()                                                                     # Test Print
         print("Family Member #", familyWeightList.index(individualWeight) + 1)      #Test Print
         i = rows - 1           # n is total items 
         j = individualWeight
@@ -55,22 +56,38 @@ def createMatrix(priceWeightList, familyWeightList):
 
         # print("i = ", i)                    #Test Print
         # print("j = ", j)                    #Test Print
-        print("currentWeightCapacity = ", currentWeightCapacity)        #Test Print
-        # print("Total Item Value =", matrix[i][j - 1])       #Test Print
+        print("currentWeightCapacity Before Adding Items= ", currentWeightCapacity)        #Test Print
+        
 
         #Iterate through Matrix Bottom to Top
         while i > 0 and j > 0:
             if matrix[i][j] == matrix[i-1][j]:
                 i = i - 1
             else:
-                print("i = ", i)
-                i = i - 1
+                # print("i = ", i)
+                itemsCarried.append(i)
+                print("Item ", i, "Carried")            #Test Print
+                print("Currently at Matrix[",i,"]","[",j,"] = ", matrix[i][j], sep="")            #Test Print
+                print("Weight[", i, "] = ", weight[i], sep="")          #Test Print
+                currentWeightCapacity = currentWeightCapacity - weight[i]
+                
                 j = j - weight[i]
+                i = i - 1
+                
+                print("currentWeightCapacity = ", currentWeightCapacity)        #Test Print
+        print("Items carried:", itemsCarried)           #Test Print
 
-    # print("Matrix = ",matrix)                            # Test Print
-    # print("Matrix Num Rows aka Items= ", len(matrix))
-    # print("Matrix Num Col aka Weights= ", len(matrix[0]))
+    
+
+    # # print("Matrix = ",matrix)                            # Test Print
+    # print("Matrix Num Rows aka Items= ", len(matrix))       # Test Print
+    # print("Matrix Num Col aka Weights= ", len(matrix[0]))   # Test Print
     # print("Matrix Length aka Items= ", len(matrix))      # Test print; Finding out if items goes from 0 to total items (added 1 earlier)
+
+    print("Matrix[6][25] = ",matrix[6][25])                            # Test Print
+    print("Matrix[6][25] = ",matrix[6][23])                            # Test Print
+    print("Matrix[6][25] = ",matrix[6][21])                            # Test Print
+    print("Matrix[6][25] = ",matrix[6][19])                            # Test Print
 
 tempPriceWeightList = [32, 16, 43, 12, 26, 4, 50, 8, 20, 3, 27, 9]
 tempFamilyWeightList = [25, 23, 21, 19]
