@@ -64,8 +64,15 @@ def itemsCarried(priceWeightList,familyWeightList, matrix):
     for i in familyWeightList:
         temp = matrix[len(price) - 1][i]
         totalPrice = totalPrice + temp
-    print("Total Price", totalPrice)    #Test Print
-    print("Member Items:")              #Test Print
+
+    # Write to file
+    with open('results.txt', 'a') as filehandle:
+        filehandle.write("Total Price ") 
+        filehandle.write(str(totalPrice))
+        filehandle.write('\n')      #After array has been written to txt file then add a newline character
+        filehandle.write("Member Items:\n")
+    # print("Total Price", totalPrice)    #Test Print
+    # print("Member Items:")              #Test Print
     # Check to see which items are included/carried for each family member 
     count = 1
     for individualWeight in familyWeightList:
@@ -84,9 +91,20 @@ def itemsCarried(priceWeightList,familyWeightList, matrix):
                 
                 j = j - weight[i]
                 i = i - 1
-        print(count, ": ", itemsCarried[::-1] , sep="")         #Test Print
+        
+        # tempItemsCarried = str(itemsCarried[::-1])
+
+        with open('results.txt', 'a') as filehandle:
+            filehandle.write(str(count))
+            filehandle.write(": ")
+            for i in itemsCarried[::-1]:
+                filehandle.write(str(i))
+                filehandle.write(" ")
+            filehandle.write('\n') 
         count += 1
 
+    with open('results.txt', 'a') as filehandle:        #added extra newline for formatting 
+            filehandle.write('\n') 
 
         
 
@@ -128,7 +146,7 @@ isNextTestCase = False
 
 
 # Write over file with empty string
-with open('shoppingResults.txt', 'w') as filehandle:
+with open('results.txt', 'w') as filehandle:
     filehandle.write('') 
 
 
@@ -161,12 +179,15 @@ with open('shopping.txt') as f:
 
                 # Need to do optimization here **********************************
                 #          # Write array to file
-                    # with open('shoppingResults.txt', 'a') as filehandle:
+                    with open('results.txt', 'a') as filehandle:
+                        filehandle.write("Test Case ")
+                        filehandle.write(str(testCaseCount))
+                        filehandle.write('\n')      # add a newline character
                     #     for k in range(0, len(testArray)):
                     #         filehandle.write(str(testArray[k]))
                     #         filehandle.write(' ')   #Put a space between each number
                     #     filehandle.write('\n')      #After array has been written to txt file then add a newline character
-                    print("Test Case ", testCaseCount)        #Test print
+                    # print("Test Case ", testCaseCount)        #Test print
                     shoppingSpreeOptimization(testCaseCount, itemPriceWeightList,familyWeightList)
                     
                 # ********************************************************************
@@ -234,7 +255,7 @@ with open('shopping.txt') as f:
 #         stoogeSort(testArray, k, j)            #Use mergeSort to rearrange array
 
 #          # Write array to file
-#         with open('shoppingResults.txt', 'a') as filehandle:
+#         with open('results.txt', 'a') as filehandle:
 #             for k in range(0, len(testArray)):
 #                 filehandle.write(str(testArray[k]))
 #                 filehandle.write(' ')   #Put a space between each number
