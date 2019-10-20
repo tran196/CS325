@@ -3,7 +3,27 @@
 # Problem 4 Shopping Spree
 
 
+def shoppingSpreeOptimization(testCaseCount, priceList, familyList):
+    totalPrice = 0
+    tempList = []
+    for i in range(len(priceList)):
+        for j in priceList[i]:
+            temp = int(j)
+            tempList.append(temp)
+    # print("This is shopping optimization")    #Test print
+    print("Price List: ", priceList)            #Test print
+    # print("Family List: ", familyList)        #Test print
+    # print("Test Case ", testCaseCount)        #Test print
+    # print("Total Price ", totalPrice)         #Test print
+
+    print("Temp List: ", tempList)              #Test print        
+
+
+
+
+
 # ************** Variables for shopping.txt *****************
+testCaseCount = 0
 numTestCases = 0
 currentTextCaseIndex = 0
 numItems = 0
@@ -13,7 +33,6 @@ isPriceWeightLine = False
 isFamilySizeLine = False
 isFamilyWeightLine = False
 isNextTestCase = False
-
 
 # ***********************************************************
 
@@ -34,45 +53,47 @@ with open('shopping.txt') as f:
             isNumItemLine = True            # next line is the number of items in test case
             
         elif isFamilyWeightLine == True:
-            print("Family Weight Line")    #Test print
+            # print("Family Weight Line")    #Test print
             if count < familySize:
-                line = line.split()
+                # line = line.split()
+                line = int(line)
                 familyList.append(line)
                 count += 1
                 if count == familySize:
                     isFamilyWeightLine = False
-                #   isNextTestCase = True
                     isNumItemLine = True
                     count = 0
-
-                print("Family List = ", familyList) # Test Print
-                
+                    testCaseCount += 1
+                    # print("Family List = ", familyList) # Test Print
+                # Need to do optimization here **********************************
+                    shoppingSpreeOptimization(testCaseCount, priceList,familyList)
+                    
+                # ********************************************************************
 
         elif isFamilySizeLine == True:
-            print("Family Size Line")       #Test print
+            # print("Family Size Line")       #Test print
             isFamilyWeightLine = True
             isFamilySizeLine = False
             familySize = int(line)          # Assign Family Size Value
-            print("Family Size = ", familySize)
+            print("Family Size = ", familySize) #Test print
 
 
         elif isPriceWeightLine == True:   
-            print("Price/Weight Line")  #Test print
+            # print("Price/Weight Line")  #Test print
             if count < numItems:
                 line = line.split() 
                 priceList.append(line)          # Assign Item Price & Weight 
+
                 count += 1
                 if count == numItems:
                     isPriceWeightLine = False
                     isFamilySizeLine = True
                     count = 0
-            
-                print("Price List = ", priceList)   # Test Print
-
+                    # print("Price List = ", priceList)   # Test Print
 
 
         elif isNumItemLine == True:
-            print("Num Item Line")      #Test print
+            # print("Num Item Line")      #Test print
 
             numItems = int(line)            # set the number of Items variable
             priceList = []                  # initalize price/weight list  
@@ -99,7 +120,7 @@ with open('shopping.txt') as f:
 
             
 
-        print("Current Line Number = ", currentLine)     #test print
+        # print("Current Line Number = ", currentLine)     #test print
         currentLine += 1                    # Increment current line
 
 
