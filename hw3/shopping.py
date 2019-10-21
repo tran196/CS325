@@ -3,8 +3,8 @@
 # Problem 4 Shopping Spree
 
 
-# Need to create item/weight matrix 
-# weights as the rows and item # as column
+# This function creates item/weight matrix; takes in the item price weight and the family carrying weight list and returns a matrix
+
 def createMatrix(priceWeightList, familyWeightList):
     columns = max(familyWeightList) + 1       # Find max weight for the Family List; Add 1 to go from 0 to max
     rows = ( len(priceWeightList)//2 ) + 1  # Get total number of items; Add 1 so we can start counting from 1
@@ -39,15 +39,15 @@ def createMatrix(priceWeightList, familyWeightList):
                  matrix[i][j] = max( price[i] + matrix[i - 1][j - weight[i]], matrix[i - 1][j] )
             else:
                 matrix[i][j] = matrix[i-1][j]
-
     return matrix
 
+# This function takes in the item Price/Weight List, the family max carrying weight list and the matrix of values and writes to results.txt file
 def itemsCarried(priceWeightList,familyWeightList, matrix):
 
     totalPrice = 0
     rows = ( len(matrix) )  # Get total number of items; Add 1 so we can start counting from 1
 
-    # Need to separate price weight list into separate lists
+    # Need to separate price and weight into separate lists
     price = []
     weight = []
     for i in range(len(priceWeightList)):
@@ -65,14 +65,13 @@ def itemsCarried(priceWeightList,familyWeightList, matrix):
         temp = matrix[len(price) - 1][i]
         totalPrice = totalPrice + temp
 
-    # Write to file
+    # Write to Total Price results file
     with open('results.txt', 'a') as filehandle:
         filehandle.write("Total Price ") 
         filehandle.write(str(totalPrice))
         filehandle.write('\n')      #After array has been written to txt file then add a newline character
         filehandle.write("Member Items:\n")
-    # print("Total Price", totalPrice)    #Test Print
-    # print("Member Items:")              #Test Print
+
     # Check to see which items are included/carried for each family member 
     count = 1
     for individualWeight in familyWeightList:
@@ -88,12 +87,10 @@ def itemsCarried(priceWeightList,familyWeightList, matrix):
             else:
                 itemsCarried.append(i)
                 currentWeightCapacity = currentWeightCapacity - weight[i]
-                
                 j = j - weight[i]
                 i = i - 1
-        
-        # tempItemsCarried = str(itemsCarried[::-1])
 
+        # Write Items Carried by Family Members results file
         with open('results.txt', 'a') as filehandle:
             filehandle.write(str(count))
             filehandle.write(": ")
@@ -106,28 +103,17 @@ def itemsCarried(priceWeightList,familyWeightList, matrix):
     with open('results.txt', 'a') as filehandle:        #added extra newline for formatting 
             filehandle.write('\n') 
 
-        
-
-def shoppingSpreeOptimization(testCaseCount, itemPriceWeightList, familyWeightList):
-    totalPrice = 0
+    # This function converts item price weight list from string to int then calls the createMatrix function and the itemsCarried function
+def shoppingSpreeOptimization(itemPriceWeightList, familyWeightList):
     tempList = []
     # Convert itemPriceWeightList from "string" to "int"
     for i in range(len(itemPriceWeightList)):
         for j in itemPriceWeightList[i]:
             temp = int(j)
             tempList.append(temp)
-    # print("This is shopping optimization")    #Test print
-    # print("Item Price Weight List: ", itemPriceWeightList)            #Test print
-    # print("Family Max Weight List: ", familyWeightList)        #Test print
-    # print("Test Case ", testCaseCount)        #Test print
-    # print("Total Price ", totalPrice)         #Test print
-
-    # print("Temp List: ", tempList)              #Test print    
 
     matrix = createMatrix(tempList, familyWeightList)
     familyItemsCarried = itemsCarried(tempList, familyWeightList, matrix)
-
-
 
 
 # ************** Variables for shopping.txt *****************
@@ -144,12 +130,9 @@ isNextTestCase = False
 
 # ***********************************************************
 
-
 # Write over file with empty string
 with open('results.txt', 'w') as filehandle:
     filehandle.write('') 
-
-
 
 # Main Code
 
@@ -163,10 +146,8 @@ with open('shopping.txt') as f:
             numTestCases = int(line)        # first line in shoppping.txt used for number of test cases
             isNumItemLine = True            # next line is the number of items in test case
             
-        elif isFamilyWeightLine == True:
-            # print("Family Weight Line")    #Test print
+        elif isFamilyWeightLine == True:    # On line for Individal Family Weight Capacities
             if count < familySize:
-                # line = line.split()
                 line = int(line)
                 familyWeightList.append(line)
                 count += 1
@@ -175,33 +156,22 @@ with open('shopping.txt') as f:
                     isNumItemLine = True
                     count = 0
                     testCaseCount += 1
-                    # print("Family List = ", familyWeightList) # Test Print
 
                 # Need to do optimization here **********************************
-                #          # Write array to file
+                # Write array to file
                     with open('results.txt', 'a') as filehandle:
                         filehandle.write("Test Case ")
                         filehandle.write(str(testCaseCount))
                         filehandle.write('\n')      # add a newline character
-                    #     for k in range(0, len(testArray)):
-                    #         filehandle.write(str(testArray[k]))
-                    #         filehandle.write(' ')   #Put a space between each number
-                    #     filehandle.write('\n')      #After array has been written to txt file then add a newline character
-                    # print("Test Case ", testCaseCount)        #Test print
-                    shoppingSpreeOptimization(testCaseCount, itemPriceWeightList,familyWeightList)
-                    
+                    shoppingSpreeOptimization(itemPriceWeightList,familyWeightList)
                 # ********************************************************************
 
-        elif isFamilySizeLine == True:
-            # print("Family Size Line")       #Test print
-            isFamilyWeightLine = True
+        elif isFamilySizeLine == True:      # On line where give you How Many Family Members in Test Case
+            isFamilyWeightLine = True       # Next line will be Individal Family Weight Capacities
             isFamilySizeLine = False
             familySize = int(line)          # Assign Family Size Value
-            # print("Family Size = ", familySize) #Test print
-
 
         elif isPriceWeightLine == True:   
-            # print("Price/Weight Line")  #Test print
             if count < numItems:
                 line = line.split()             # Splits the Price and Weight i.e. 77 7 thats on the same line
                 itemPriceWeightList.append(line)          # Assign Item Price & Weight 
@@ -211,52 +181,13 @@ with open('shopping.txt') as f:
                     isPriceWeightLine = False
                     isFamilySizeLine = True
                     count = 0
-                    # print("Price List = ", itemPriceWeightList)   # Test Print
 
 
         elif isNumItemLine == True:
-            # print("Num Item Line")      #Test print
-
             numItems = int(line)            # set the number of Items variable
             itemPriceWeightList = []                  # initalize item price/weight list  ; or resets for next test case
             familyWeightList = []           # initalize family weight list  ; or resets for next test case
             isNumItemLine = False           # setting isNumItemLine = false; No longer on numItem Line of Testcase
             isPriceWeightLine = True 
 
-        # else:
-        #     print("I'm lost")
-        
-
-
-            
-
-        # print("Current Line Number = ", currentLine)     #test print
         currentLine += 1                    # Increment current line
-
-
-
-        # line = line.split()     #Gets rid of blank space
-        # testArray = line        #Assign testArray to line
-    
-    # print("numTestCases = ", numTestCases)         #test print
-    # print("numItems = ", numItems)                  #test print
-    # print("isNumItemLine = ", isNumItemLine)         #test print
-    # print("Current Line Number = ", currentLine)     #test print
-
-    # print("Price List = ", priceList)
-    # print("Family List = ", familyWeightList)
-
-#         for i in range(0, len(testArray)):
-#             testArray[i] = int(testArray[i])    #Convert str into int 
-#         del testArray[0]                #delete the first element in testArray since it is not needed
-
-#         k = 0
-#         j = len(testArray) - 1
-#         stoogeSort(testArray, k, j)            #Use mergeSort to rearrange array
-
-#          # Write array to file
-#         with open('results.txt', 'a') as filehandle:
-#             for k in range(0, len(testArray)):
-#                 filehandle.write(str(testArray[k]))
-#                 filehandle.write(' ')   #Put a space between each number
-#             filehandle.write('\n')      #After array has been written to txt file then add a newline character
