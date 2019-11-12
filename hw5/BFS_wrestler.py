@@ -58,7 +58,7 @@ def determineBabyOrHeel(tempRivalPairDictionary, tempBabyfacesList, tempHeelsLis
 
 
 # ********************************
-
+# 
 #       Program Variables 
 # ********************************
 lineCount = 1
@@ -73,10 +73,15 @@ heels = []                      # Empty List for Heels
 wrestlerNamesUnassigned = []    # Empty List for Unassigned Wrestlers
 rivalryPairsDictionary = {}               # Dictionary for Rivalry Pairs
 
-# Testing wrester list ; type wrestler
+tempRivalsList = []             # Testing This list to store the strings of the rivalries
+
+# Testing wrester list ; contains objects of type wrestler
 wrestlerList = []
 
-# ********************************
+rivalList1 = []     #trying to put rivals into a list since having trouble with dictionary
+rivalList2 = []     
+
+# ****************************************************************
 
 # Read in contents of input text file
 with open(sys.argv[1], 'r') as f:
@@ -97,8 +102,9 @@ with open(sys.argv[1], 'r') as f:
                 babyfaces.append(line)
        
         elif (lineCount > numOfWrestlers + 2) and (lineCount < numOfWrestlers + numOfRivalries + 3):   # Add to RivalryPair Dictionary
-            # print(line)
-            # print("Line Count", lineCount)
+            # print(line)                       # Test Print
+            # print("Line Count", lineCount)    # Test Print
+            tempRivalsList.append(line)                                 # storing rivalries into a string list to later be broken up/parsed
             addToRivalryPairDictionary(line, rivalryPairsDictionary)    # Add Wrestlers from File to Rival Dictionary
 
         lineCount += 1                  # Increment Line Count To Know Where We Are In File
@@ -109,52 +115,92 @@ with open(sys.argv[1], 'r') as f:
 # print(wrestlerNamesUnassigned)    # Test Print
 # print(rivalryPairsDictionary)   # Test Print
 
+# Parsing through tempRivalsList and braking string up into 2 lists: rivalsList1 and rivalsList2
+for i in tempRivalsList:
+    tempCount = 0
+    for j in i.split():
+        if tempCount == 0:
+            rivalList1.append(j)
+        else:
+            rivalList2.append(j)
+        tempCount += 1
 
-# ************************************************************************************************
-# Breath First Search
-# ************************************************************************************************s
+# Returns True if wrestler name is in the babyface list
+def isBabyface(name):
+    if name in babyfaces:
+        return True
+    else:
+        return False
 
-def BFS(name):
-    print("This is BFS")
+# Returns True if wrestler name is in the heels list
+def isHeel(name):
+    if name in heels:
+        return True
+    else:
+        return False
+
+# Returns the Index of Where the wrestler is in the Wrestler List
+def getWrestlerListIndex(name):
+    for i in wrestlerList:
+        if name == i.name:
+            return wrestlerList.index(i)
+
+def isKeyInRivalPairDictionary(name):
     # list out keys and values separately 
     key_list = list(rivalryPairsDictionary.keys()) 
     val_list = list(rivalryPairsDictionary.values()) 
+    if name in key_list:
+        return True
+    else: 
+        return False
+        
+# ************************************************************************************************
+# Breath First Search
+# Some code taken from Chapter 6 Breadth-First Search From Grokking Alogrithms
+# ************************************************************************************************s
+
+def BFS():
 
     search_queue = deque()  # Create a queue to search wrestlers
-    search_queue += rivalryPairsDictionary[name]    # Add all the neighbors/rivals into the search_queue
+    search_queue += rivalList1
 
     searched = []       # Keep track of which wrestlers I've already searched
-    # print("searched list is = ", searched)
 
     while search_queue:     # while search_queue is not empty
-        print("searched list is = ", searched)
-        print("search queue is" ,search_queue)  
+        # print(search_queue)     # Test Print
         person = search_queue.popleft()
+        if person not in searched:
+            tempIndex = getWrestlerListIndex(person)
+            if wrestlerList[tempIndex].assigned == False:    # Wrestler is not assigned; need to assign rivals and babyface/heel
+                print(person)
+                if isKeyInRivalPairDictionary(person):      # Make sure Wrestler is a Key in the RivalPair Dictionary
+                    for i in rivalryPairsDictionary[person]:
+                        wrestlerList[tempIndex].rivals.append(i)    # Assigning Rivals
+                    
+                    for j in wrestlerList[tempIndex].rivals:        # Assigning Groups: babyfaces/heels
+                        if isBabyface(j):
+                            wrestlerList[tempIndex].group = "heels"
+                        elif isHeel(j):
+                            wrestlerList[tempIndex].group = "babyfaces"
+                        tempRivalIndex = getWrestlerListIndex(j)
+                        if wrestlerList[tempRivalIndex].assigned == False:
+                            search_queue.append(j)
+                else:                                       # Wrestler is a Value and not a Key in the RivalPair Dictionary
+                    print("Do Something", wrestlerList[tempIndex].name)
+                    
+
+                wrestlerList[tempIndex].assigned = True
+            
+            searched.append(person)
+   
         
-        if person not in searched: # only search this wrestler/person if you haven't searched for them yet
-            if person in babyfaces:            # need to assign either babyface or heel
-                print(person, "is already a babyface")
-
-            elif person in heels:
-                print(person, "is already a heel")
-
-            else:                # Else add this person's/wrestler's neighbors to the search queue
-                if person in rivalryPairsDictionary.keys():
-                    search_queue += rivalryPairsDictionary[person]
-                else:
-                    print(search_queue)
-
-                searched.append(person)         # Add person/wrestler to already searched
-
+  
         
 
 # ************************************************************************************************
 # ********************************  Main Code  ***************************************************
 # ************************************************************************************************
 
-
-
-# determineBabyOrHeel(rivalryPairsDictionary, babyfaces, heels)
 
 # list out keys and values separately 
 # key_list = list(rivalryPairsDictionary.keys()) 
@@ -164,23 +210,49 @@ def BFS(name):
 for i in wrestlerNamesUnassigned: 
     wrestlerList.append(Wrestler(i))
 
-# Prints out wrestlerList with only names assigned
-for i in wrestlerList:
-    print("Name" ,i.name, "Group", i.group)
-    print("Rivals", i.rivals)
-    print("Assigned", i.assigned)
+# Fill out data for the first name/wrestler in the list; assign them to babyface squad
+wrestlerList[0].group = "babyfaces"
+wrestlerList[0].assigned = True
+for i in rivalryPairsDictionary[wrestlerList[0].name]:
+    wrestlerList[0].rivals.append(i)
 
-print("**************\n")
+# Need to Take Care of the Rival as well
+for i in wrestlerList[0].rivals:
+    tempIndex = getWrestlerListIndex(i)   
+    wrestlerList[tempIndex].group = "heels"
+    wrestlerList[tempIndex].assigned = True
+    for j in rivalryPairsDictionary[i]:
+        wrestlerList[tempIndex].rivals.append(j)
 
-# # Assign Rivals in Wrestler List
-for i in wrestlerList:
-    print("Name" ,i.name)
-    if i.name in rivalryPairsDictionary.keys():
-        i.rivals.append(rivalryPairsDictionary[i.name])
-        print("Rivals of", i.name, " = ", i.rivals)
-# print(key_list)
-# print(val_list)
-# print(val_list[1])
+
+# print(tempRivalsList)   # Test Print
+
+
+# print(rivalList1)   # Test Print
+# print(rivalList2)   # Test Print
+# print("**************\n")    # Test Print
+
+# # Prints out wrestlerList with only names assigned
+# for i in wrestlerList:
+#     print("Name" ,i.name, "Group", i.group)
+#     print("Rivals", i.rivals)
+#     print("Assigned", i.assigned)
+
+# print("**************\n")
+
+# # # Assign Rivals in Wrestler List
+# for i in wrestlerList:
+#     print("Name:" ,i.name)
+#     if i.name in rivalList1:    # If Name is on the left hand side of the rivalry pair assign rival
+#         tempIdx = rivalList1.index(i.name)
+#         i.rivals.append(rivalList2[tempIdx])
+#     print("Rival of ", i.name, "is ", i.rivals)
+
+# print("index", rivalList1.index("Bear"))
+
+# print(key_list)   # Test Print
+# print(val_list)   # Test Print
+# print(val_list[1])    # Test Print
 
 
 #           Print Keys from RivalDictionary
@@ -189,15 +261,39 @@ for i in wrestlerList:
 #           Print Values from RivalDictionary
 # print(rivalryPairsDictionary.values())
 
-# BFS(wrestlerList[0].name)
+# ************************************ 
+#       Trying BFS 
+# ************************************ 
 
-# print(rivalryPairsDictionary["Duke"])
+BFS()
+
+# ************************************ 
+
+# print(rivalryPairsDictionary)   # Test Print
 
 # print(wrestlerList[0].name)     # Test Print
 # print(wrestlerList[0].group)     # Test Print
+# print(wrestlerList[0].rivals)   # Test Print
+# print(wrestlerList[0].assigned) # Test Print
 
-# for i in wrestlerList:
-#     print(i.name, type(i))      # Test Print
+# print(wrestlerList[4].name)     # Test Print
+# print(wrestlerList[4].group)     # Test Print
+# print(wrestlerList[4].rivals)   # Test Print
+# print(wrestlerList[4].assigned) # Test Print
+
+# print(wrestlerList[5].name)     # Test Print
+# print(wrestlerList[5].group)     # Test Print
+# print(wrestlerList[5].rivals)   # Test Print
+# print(wrestlerList[5].assigned) # Test Print
+
+# print (isBabyface(wrestlerList[0].name)) # Test Print
+
+for i in wrestlerList:
+    print("name:", i.name)      # Test Print
+    print(i.group)
+    print(i.rivals)
+    print(i.assigned)
+
 
 
 # if (impossibleSolution == True):
