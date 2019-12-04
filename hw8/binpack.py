@@ -3,6 +3,9 @@
 # Problem 1 Bin Packing
 # 12/3/19
 
+import sys
+from collections import deque   # use a queue
+
 class TestCase:
     def __init__(self, name, binCapacity, unsortedItemWeight, binList):
         self.name = name
@@ -23,10 +26,89 @@ class Bin:
 def firstFit(testCase):
     # print("firstFit")  # Test Print
     # print(testCase.name)  # Test Print
-    print(testCase.name, "Bin Capacity", testCase.binCapacity)  # Test Print
-    print(testCase.name, "Unsorted Item Weight List", testCase.unsortedItemWeight)  # Test Print
-    print(testCase.name, "Bin List", testCase.binList)  # Test Print
+    # print(testCase.name, "Bin Capacity", testCase.binCapacity)  # Test Print
+    # print(testCase.name, "Unsorted Item Weight List", testCase.unsortedItemWeight)  # Test Print
+    # print(testCase.name, "Bin List", testCase.binList)  # Test Print
 
+    # ******* Local First Fit Variables **************
+    # *************************************************
+    localBinCount = 0           # Local Bin Count
+    localBinCapacity = testCase.binCapacity     # Assign local bin capacity to testCase Bin Capacity
+    localBinList = []       # List of Bin Objects
+    isAssigned = False      # is the current value/ item assigned yet
+
+    localUnsortedItemList = testCase.unsortedItemWeight      
+    localItemsAssigned = 0      # Counter To Keep Track of Items Assigned
+
+    localQueue = deque() # Create queue to go through items
+    
+    for i in localUnsortedItemList:
+        localQueue.append(i) 
+
+    # ********************************************************
+
+
+    if not testCase.binList:       # Bin List is Empty
+        # print(testCase.name , "Bin List is empty")      # test Print
+        # Create a new bin
+        localBinList.append(Bin(localBinCapacity, [], 1, testCase))
+        localBinCount += 1
+
+    # # Loop through localUnsortedItemList
+    # for i in localUnsortedItemList:
+    #     for binElement in localBinList:
+    #         # if localItemsAssigned <= len(localUnsortedItemList): # Make sure not to over assign items
+            
+    #         # Assign To Bin 
+    #         if (i <= binElement.capacity) and (binElement.capacity > 0):
+    #             tempIndex = localUnsortedItemList.index(i)
+    #             binElement.itemsInBin.append(i)           # Add i to itemsInBin for bin1
+    #             binElement.capacity = binElement.capacity - i   # Subtract i from bin.capacity
+    #             localItemsAssigned += 1
+    #             localUnsortedItemList.pop(tempIndex)
+
+    #         # Else Create a new bin
+    #         else:
+    #             localBinCount += 1
+    #             localBinList.append(Bin(localBinCapacity, [], localBinCount, testCase))
+
+    while localQueue:
+        i = localQueue.popleft()    # Far left value in queue
+        isAssigned = False
+
+        for binElement in localBinList:
+            # print("******Bin Number", binElement.binNumber, "Current Bin Capacity", binElement.capacity)   # Test Print
+            # print("Current Value of i=", i)                     # Test Print
+            
+            if (isAssigned == True):
+                break
+            
+            # Assign To Bin 
+            elif (i <= binElement.capacity) and (binElement.capacity > 0):
+                binElement.itemsInBin.append(i)           # Add i to itemsInBin for current bin
+                binElement.capacity -= i   # Subtract i from bin.capacity
+                localItemsAssigned += 1
+                # print("Just assigned value=", i, "to bin", binElement.binNumber) # Test Print
+                isAssigned = True
+                
+            
+        if (isAssigned == False):
+            # Create a new bin
+            localBinCount += 1
+            localBinList.append(Bin(localBinCapacity, [], localBinCount, testCase))
+            # print("***Just Created a New Bin", localBinCount)
+
+        # Assign to Bin
+        lastIndex = len(localBinList) - 1   # TempIndex for newly created bin
+        if (i <= localBinList[lastIndex].capacity) and (localBinList[lastIndex].capacity > 0) and (isAssigned == False):
+            localBinList[lastIndex].itemsInBin.append(i)   # Assign value of i to newly created bin
+            localBinList[lastIndex].capacity -= i   # Subtract i from bin.capacity
+            # print("Just assigned value=", i, "to bin", localBinList[lastIndex].binNumber) # Test Print
+
+    # for i in localBinList:
+    #     print(i.capacity, i.itemsInBin, i.binNumber)    # Test Print
+
+    print("First Fit:", len(localBinList) , end=" ")
 
 
 #  First sort the items in decreasing order by size,
@@ -67,6 +149,8 @@ count = 0                           # counter to keep track of number of items
 
 # Read in Data from bin.txt
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
+
+# with open('bin.txt') as f:
 with open('bin.txt') as f:
 
     testArray = f.read().splitlines()       # read in each line; then split and assign to testArray
@@ -85,6 +169,10 @@ with open('bin.txt') as f:
             isNumOfItemLine = True          # Next line is the number of Items 
             isBinCapacityLine = False
 
+            # # Test print type binCapacity
+            # print("TempBinCapacity", tempBinCapacity)
+            # print(type(tempBinCapacity))
+
         elif isNumOfItemLine == True:       # Current Line is Number of Items
             tempNumberOfItems = line
             isListOfItemWeight = True       # Next line is the list of Item Weights
@@ -98,9 +186,13 @@ with open('bin.txt') as f:
 
         if (isBinCapacityLine == False) and (isNumOfItemLine == False) and (isListOfItemWeight == False):
             print("Test Case", currentTestCase, end=" ")
+            
+            # print() # Test Print for Formatting 
             isBinCapacityLine = True        # Next line is the binCapacityLine
 
             tempTestCaseName = "testCase" + str(currentTestCase) 
+
+            tempBinCapacity = int(tempBinCapacity)  # Convert from str to int
 
             tempTestCase = TestCase(tempTestCaseName, tempBinCapacity, tempUnsortedItemWeight, tempBinList)
 
@@ -112,6 +204,11 @@ with open('bin.txt') as f:
             # Run Best Fit
 
 
+            # Test Stop After 1st Test Case
+            if currentTestCase == 1:
+                sys.exit()            
+
+
             # Reset Variables
             tempTestCaseName = "N/A"
             tempBinCapacity = 0
@@ -119,9 +216,7 @@ with open('bin.txt') as f:
             tempBinList = []
 
             currentTestCase += 1
-            
-
-        
+     
         count += 1
         
 
