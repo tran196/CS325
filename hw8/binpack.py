@@ -157,7 +157,7 @@ def firstFitDecreasing(testCase):
             localBinList[lastIndex].itemsInBin.append(i)   # Assign value of i to newly created bin
             localBinList[lastIndex].capacity -= i   # Subtract i from bin.capacity
 
-    print("First Fit Descending:", len(localBinList) , end=" ")
+    print("First Fit Descreasing:", len(localBinList) , end=" ")
 
 
 
@@ -167,8 +167,78 @@ def firstFitDecreasing(testCase):
 # Place the next item into the bin which will leave the 
 # least room left over after the item is placed in the bin. 
 # If it does not fit in any bin, start a new bin. 
-def bestFit():
-    print("bestFit")
+def bestFit(testCase):
+    # ******* Local First Fit Decreasing Variables **************
+    # *************************************************
+    localBinCount = 0           # Local Bin Count
+    localBinCapacity = testCase.binCapacity     # Assign local bin capacity to testCase Bin Capacity
+    localBinList = []       # List of Bin Objects
+    isAssigned = False      # is the current value/ item assigned yet
+    localUnsortedItemList = testCase.unsortedItemWeight      
+    localItemsAssigned = 0      # Counter To Keep Track of Items Assigned
+    localQueue = deque()        # Create queue to go through items
+
+    tempHighestBinCapacity = localBinCapacity * 2
+
+    isOptimal = False           # Is Value Being Assigned Optimal Bin for Best Fit
+
+    # mergeSort(localUnsortedItemList)
+    
+    for i in localUnsortedItemList:     # Append Int Values to Queue
+        localQueue.append(i) 
+    # ********************************************************
+
+    if not testCase.binList:       # Bin List is Empty
+        localBinList.append(Bin(localBinCapacity, [], 1, testCase)) # Add bin to localBinList
+        localBinCount += 1
+
+    while localQueue:
+        i = localQueue.popleft()    # Far left value in queue
+        isAssigned = False
+        isOptimal = False           
+
+        # ******* Test Print Area *********
+        # *********************************
+        print("Current Value i:", i)
+        # *********************************
+
+        for binElement in localBinList:
+            if (isAssigned == True):
+                break
+            
+            # Assign To Bin 
+            elif (i <= binElement.capacity) and (binElement.capacity > 0):
+                # Check if Assignment to bin is optimal
+                 
+                
+                # ******* Test Print Area *********
+                # *********************************
+                print("Assigning i:", i, "to bin", binElement.binNumber)
+                # *********************************
+                
+                binElement.itemsInBin.append(i)           # Add i to itemsInBin for current bin
+                binElement.capacity -= i   # Subtract i from bin.capacity
+                localItemsAssigned += 1
+                isAssigned = True
+                
+        if (isAssigned == False):
+            # Create a new bin
+            localBinCount += 1
+            localBinList.append(Bin(localBinCapacity, [], localBinCount, testCase))
+
+        # Assign to Bin
+        lastIndex = len(localBinList) - 1   # TempIndex for newly created bin
+        if (i <= localBinList[lastIndex].capacity) and (localBinList[lastIndex].capacity > 0) and (isAssigned == False):
+            # ******* Test Print Area *********
+            # *********************************
+            print("Assigning i:", i, "to bin", localBinList[lastIndex].binNumber)
+            # *********************************
+            localBinList[lastIndex].itemsInBin.append(i)   # Assign value of i to newly created bin
+            localBinList[lastIndex].capacity -= i   # Subtract i from bin.capacity
+
+    print("Best Fit:", len(localBinList) , end=" ")
+
+
 
 
 # ********** Variables for Bin Packing ****************
@@ -197,7 +267,7 @@ count = 0                           # counter to keep track of number of items
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
 
 # with open('bin.txt') as f:
-with open('bin.txt') as f:
+with open('bin1.txt') as f:             # ********* Remember to change back to bin.txt
 
     testArray = f.read().splitlines()       # read in each line; then split and assign to testArray
     #  print(testArray)   # Test Print
@@ -233,7 +303,7 @@ with open('bin.txt') as f:
         if (isBinCapacityLine == False) and (isNumOfItemLine == False) and (isListOfItemWeight == False):
             print("Test Case", currentTestCase, end=" ")
             
-            # print() # Test Print for Formatting 
+            print() # Test Print for Formatting 
             isBinCapacityLine = True        # Next line is the binCapacityLine
 
             tempTestCaseName = "testCase" + str(currentTestCase) 
@@ -248,21 +318,30 @@ with open('bin.txt') as f:
             # print("tempNumberOfItems",tempNumberOfItems) # Test Print
             # print("tempUnsortedItemWeight",tempUnsortedItemWeight) # Test Print
 
-            # Run First Fit
+            # # Run First Fit
 
             # firstFit(tempTestCase)
+            # # print("********************\n")     # Test print for formatting
+
+            # # Run First Fit Decreasing
+            # firstFitDecreasing(tempTestCase)
+            # # print("********************\n")     # Test print for formatting
+
+            # # Run Best Fit
+            # bestFit(tempTestCase)
             # print("********************\n")     # Test print for formatting
 
-            # Run First Fit Decreasing
-            firstFitDecreasing(tempTestCase)
-            print("********************\n")     # Test print for formatting
+            if currentTestCase == 3:
+                firstFit(tempTestCase)
+                print("********************\n")     # Test print for formatting
+                firstFitDecreasing(tempTestCase)
+                print("********************\n")     # Test print for formatting
+                bestFit(tempTestCase)
+                print("********************\n")     # Test print for formatting
 
-            # Run Best Fit
-
-
-            # Test Stop After 1st Test Case
-            if currentTestCase == 1:
-                sys.exit()            
+            # # Test Stop After 1st Test Case
+            # if currentTestCase == 1:
+            #     sys.exit()            
 
 
             # Reset Variables
