@@ -5,6 +5,7 @@
 
 import sys
 from collections import deque   # use a queue
+import time
 
 class TestCase:
     def __init__(self, name, binCapacity, unsortedItemWeight, binList):
@@ -121,7 +122,7 @@ def firstFitDecreasing(testCase):
     localItemsAssigned = 0      # Counter To Keep Track of Items Assigned
     localQueue = deque()        # Create queue to go through items
 
-    mergeSort(localUnsortedItemList)
+    localSortedItemList = mergeSort(localUnsortedItemList)
     
     for i in localUnsortedItemList:     # Append Int Values to Queue
         localQueue.append(i) 
@@ -168,6 +169,88 @@ def firstFitDecreasing(testCase):
 # least room left over after the item is placed in the bin. 
 # If it does not fit in any bin, start a new bin. 
 def bestFit(testCase):
+    # # ******* Local First Fit Decreasing Variables **************
+    # # *************************************************
+    # localBinCount = 0           # Local Bin Count
+    # localBinCapacity = testCase.binCapacity     # Assign local bin capacity to testCase Bin Capacity
+    # localBinList = []       # List of Bin Objects
+    # isAssigned = False      # is the current value/ item assigned yet
+    # localUnsortedItemList = testCase.unsortedItemWeight      
+    # localItemsAssigned = 0      # Counter To Keep Track of Items Assigned
+    # localQueue = deque()        # Create queue to go through items
+
+    # tempHighestBinCapacity = localBinCapacity * 2
+
+    # isOptimal = False           # Is Value Being Assigned Optimal Bin for Best Fit
+
+    # # mergeSort(localUnsortedItemList)
+    
+    # for i in localUnsortedItemList:     # Append Int Values to Queue
+    #     localQueue.append(i) 
+    # # ********************************************************
+
+    # if not testCase.binList:       # Bin List is Empty; Create First Bin
+    #     localBinList.append(Bin(localBinCapacity, [], 1, testCase)) # Add bin to localBinList
+    #     localBinCount += 1
+
+    # while localQueue:
+    #     i = localQueue.popleft()    # Far left value in queue
+    #     bestBinCapacity = 99999
+    #     tempBinCapacity = 100000
+    #     indexBestBin = -1
+
+    #     # # ******* Test Print Area *********
+    #     # # *********************************
+    #     print("Current Value i:", i)
+    #     print("Total bins", len(localBinList))
+    #     # # *********************************
+
+
+    #     # Iterate through each bin
+    #     for binElement in localBinList:
+
+    #         print("I am inside bin number", binElement.binNumber)     # test print
+    #         print("bin number", binElement.binNumber, " has the following contents", binElement.itemsInBin, "length = ", len(binElement.itemsInBin))     # test print
+    #         print() #test print
+
+    #         # if bin is empty
+    #         if (len(binElement.itemsInBin) == 0): 
+    #             tempCapacity = binElement.capacity - i
+            
+    #         # Can i fit in the bin
+    #         elif (i <= binElement.capacity) and (binElement.capacity > 0):    
+    #             # if true then i fits inside the bin
+    #             # subtract i from current bin capacity and store in temp variable
+    #             tempCapacity = binElement.capacity - i 
+    #         else:
+    #             print(i, "cannot fit into bin", binElement.binNumber)
+    #             # Create a new bin
+    #             localBinList.append(Bin(localBinCapacity, [], localBinCount, testCase)) # Add bin to localBinList
+    #             localBinCount += 1
+
+    #         # if the tempBinCap is lower than the bestBinCapacity
+    #         # assign a new best
+    #         if tempCapacity < bestBinCapacity:
+    #             bestBinCapacity = tempCapacity
+    #             indexBestBin = localBinList.index(binElement)
+    #         else:
+    #             print("current bin is", binElement.number, "the previous bin was lower")
+
+
+    #     if (indexBestBin < 0):
+    #         # Now after going through all the bins assign item to a bin
+    #         localBinList[indexBestBin].capacity = bestBinCapacity
+    #         localBinList[indexBestBin].itemsInBin.append(i)
+
+    #         print("Assigning i=", i, "to bin", localBinList[indexBestBin].binNumber) 
+    #         print("New Bin Capacity is", localBinList[indexBestBin].capacity) 
+    #         print()
+
+
+
+
+
+
     # ******* Local First Fit Decreasing Variables **************
     # *************************************************
     localBinCount = 0           # Local Bin Count
@@ -199,7 +282,7 @@ def bestFit(testCase):
 
         # ******* Test Print Area *********
         # *********************************
-        print("Current Value i:", i)
+        # print("Current Value i:", i)
         # *********************************
 
         for binElement in localBinList:
@@ -213,7 +296,7 @@ def bestFit(testCase):
                 
                 # ******* Test Print Area *********
                 # *********************************
-                print("Assigning i:", i, "to bin", binElement.binNumber)
+                # print("Assigning i:", i, "to bin", binElement.binNumber)
                 # *********************************
                 
                 binElement.itemsInBin.append(i)           # Add i to itemsInBin for current bin
@@ -231,13 +314,12 @@ def bestFit(testCase):
         if (i <= localBinList[lastIndex].capacity) and (localBinList[lastIndex].capacity > 0) and (isAssigned == False):
             # ******* Test Print Area *********
             # *********************************
-            print("Assigning i:", i, "to bin", localBinList[lastIndex].binNumber)
+            # print("Assigning i:", i, "to bin", localBinList[lastIndex].binNumber)
             # *********************************
             localBinList[lastIndex].itemsInBin.append(i)   # Assign value of i to newly created bin
             localBinList[lastIndex].capacity -= i   # Subtract i from bin.capacity
 
     print("Best Fit:", len(localBinList) , end=" ")
-
 
 
 
@@ -266,8 +348,8 @@ count = 0                           # counter to keep track of number of items
 # Read in Data from bin.txt
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
 
-# with open('bin.txt') as f:
-with open('bin1.txt') as f:             # ********* Remember to change back to bin.txt
+with open('testBin.txt') as f:
+# with open('bin.txt') as f:             # ********* Remember to change back to bin.txt
 
     testArray = f.read().splitlines()       # read in each line; then split and assign to testArray
     #  print(testArray)   # Test Print
@@ -303,7 +385,7 @@ with open('bin1.txt') as f:             # ********* Remember to change back to b
         if (isBinCapacityLine == False) and (isNumOfItemLine == False) and (isListOfItemWeight == False):
             print("Test Case", currentTestCase, end=" ")
             
-            print() # Test Print for Formatting 
+            # print() # Test Print for Formatting 
             isBinCapacityLine = True        # Next line is the binCapacityLine
 
             tempTestCaseName = "testCase" + str(currentTestCase) 
@@ -311,6 +393,12 @@ with open('bin1.txt') as f:             # ********* Remember to change back to b
             tempBinCapacity = int(tempBinCapacity)  # Convert from str to int
 
             tempTestCase = TestCase(tempTestCaseName, tempBinCapacity, tempUnsortedItemWeight, tempBinList)
+ 
+            tempSortedItemWeight = []           # Make a copy that will be sorted via merge sort in the First Fit Decreasing
+            for i in tempUnsortedItemWeight:
+                tempSortedItemWeight.append(i)
+
+            tempFirstFitDecreasingTestCase = (TestCase(tempTestCaseName, tempBinCapacity, tempSortedItemWeight, tempBinList))
 
 
             # print("numTestCases",numTestCases) # Test Print
@@ -318,26 +406,46 @@ with open('bin1.txt') as f:             # ********* Remember to change back to b
             # print("tempNumberOfItems",tempNumberOfItems) # Test Print
             # print("tempUnsortedItemWeight",tempUnsortedItemWeight) # Test Print
 
-            # # Run First Fit
-
-            # firstFit(tempTestCase)
+            # Run First Fit
+            firstFitRunningTime = time.time()
+            firstFit(tempTestCase)
+            print(",", (time.time() - firstFitRunningTime), "seconds.", end="")
             # # print("********************\n")     # Test print for formatting
 
-            # # Run First Fit Decreasing
-            # firstFitDecreasing(tempTestCase)
-            # # print("********************\n")     # Test print for formatting
-
-            # # Run Best Fit
-            # bestFit(tempTestCase)
+            # Run First Fit Decreasing
+            firstFitDecreasingRunningTime = time.time()
+            firstFitDecreasing(tempFirstFitDecreasingTestCase)
+            print(",", (time.time() - firstFitDecreasingRunningTime), "seconds.", end="")
             # print("********************\n")     # Test print for formatting
 
-            if currentTestCase == 3:
-                firstFit(tempTestCase)
-                print("********************\n")     # Test print for formatting
-                firstFitDecreasing(tempTestCase)
-                print("********************\n")     # Test print for formatting
-                bestFit(tempTestCase)
-                print("********************\n")     # Test print for formatting
+            # Run Best Fit
+            bestFitRunningTime = time.time()
+            bestFit(tempTestCase)
+            print(",", (time.time() - bestFitRunningTime), "seconds.", end="")
+            print()                             # Test print for formatting
+            # print("********************\n")     # Test print for formatting
+
+            # if currentTestCase == 3:
+            # #     firstFit(tempTestCase)
+            # #     # print("********************\n")     # Test print for formatting
+
+            # #     # print("numTestCases",numTestCases) # Test Print
+            # #     # print("tempBinCapacity",tempBinCapacity) # Test Print
+            # #     # print("tempNumberOfItems",tempNumberOfItems) # Test Print
+            # #     # print("tempUnsortedItemWeight",tempUnsortedItemWeight) # Test Print
+
+
+
+            # #     firstFitDecreasing(tempFirstFitDecreasingTestCase)
+            #     print("********************\n")     # Test print for formatting
+
+            # #     # print("numTestCases",numTestCases) # Test Print
+            # #     # print("tempBinCapacity",tempBinCapacity) # Test Print
+            # #     # print("tempNumberOfItems",tempNumberOfItems) # Test Print
+            # #     # print("tempUnsortedItemWeight",tempUnsortedItemWeight) # Test Print
+
+            #     bestFit(tempTestCase)
+            #     print("********************\n")     # Test print for formatting
 
             # # Test Stop After 1st Test Case
             # if currentTestCase == 1:
