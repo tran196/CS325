@@ -348,8 +348,8 @@ count = 0                           # counter to keep track of number of items
 # Read in Data from bin.txt
 # Source: https://www.w3resource.com/python-exercises/file/python-io-exercise-7.php
 
-with open('testBin.txt') as f:
-# with open('bin.txt') as f:             # ********* Remember to change back to bin.txt
+# with open('testBin.txt') as f:
+with open('bin.txt') as f:             # ********* Remember to change back to bin.txt
 
     testArray = f.read().splitlines()       # read in each line; then split and assign to testArray
     #  print(testArray)   # Test Print
