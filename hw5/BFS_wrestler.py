@@ -159,10 +159,11 @@ def isKeyInRivalPairDictionary(name):
 # Some code taken from Chapter 6 Breadth-First Search From Grokking Alogrithms
 # ************************************************************************************************s
 
-def BFS():
+def BFS(name):
 
     search_queue = deque()  # Create a queue to search wrestlers
-    search_queue += rivalList1
+    # search_queue += rivalList1
+    search_queue.append(name)
 
     searched = []       # Keep track of which wrestlers I've already searched
 
@@ -180,16 +181,21 @@ def BFS():
                     for j in wrestlerList[tempIndex].rivals:        # Assigning Groups: babyfaces/heels
                         if isBabyface(j):
                             wrestlerList[tempIndex].group = "heels"
+                            wrestlerList[tempIndex].assigned = True
                         elif isHeel(j):
                             wrestlerList[tempIndex].group = "babyfaces"
+                            wrestlerList[tempIndex].assigned = True
                         tempRivalIndex = getWrestlerListIndex(j)
                         if wrestlerList[tempRivalIndex].assigned == False:
                             search_queue.append(j)
+                            wrestlerList[tempIndex].group = "heels"     # Rival doesn't have a group so assign babyface to person
+                            wrestlerList[tempIndex].assigned = True
+
                 else:                                       # Wrestler is a Value and not a Key in the RivalPair Dictionary
                     print("Do Something", wrestlerList[tempIndex].name)
                     
 
-                wrestlerList[tempIndex].assigned = True
+                
             
             searched.append(person)
    
@@ -216,13 +222,13 @@ wrestlerList[0].assigned = True
 for i in rivalryPairsDictionary[wrestlerList[0].name]:
     wrestlerList[0].rivals.append(i)
 
-# Need to Take Care of the Rival as well
-for i in wrestlerList[0].rivals:
-    tempIndex = getWrestlerListIndex(i)   
-    wrestlerList[tempIndex].group = "heels"
-    wrestlerList[tempIndex].assigned = True
-    for j in rivalryPairsDictionary[i]:
-        wrestlerList[tempIndex].rivals.append(j)
+# # Need to Take Care of the Rival as well
+# for i in wrestlerList[0].rivals:
+#     tempIndex = getWrestlerListIndex(i)   
+#     wrestlerList[tempIndex].group = "heels"
+#     wrestlerList[tempIndex].assigned = True
+#     for j in rivalryPairsDictionary[i]:
+#         wrestlerList[tempIndex].rivals.append(j)
 
 
 # print(tempRivalsList)   # Test Print
@@ -265,7 +271,7 @@ for i in wrestlerList[0].rivals:
 #       Trying BFS 
 # ************************************ 
 
-BFS()
+BFS(wrestlerList[0].name)
 
 # ************************************ 
 
